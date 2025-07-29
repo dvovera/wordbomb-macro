@@ -1,3 +1,8 @@
+import re
+# Enhanced region selection with mouse clicks and visual rectangle
+def clean_input(text):
+    # Keep only uppercase letters
+    return re.sub(r'[^A-Z]', '', text.upper())
 
 
 import pytesseract
@@ -8,11 +13,15 @@ from PIL import Image
 import requests
 import random
 import tkinter as tk
-from tkinter import messagebox, simpledialog, scrolledtext
+from tkinter import messagebox, simpledialog
+from tkinter import ttk
+from tkinter.scrolledtext import ScrolledText
 import keyboard
+
 
 # GUI global state
 region = None
+typing_speed = 0.01  # Default typing speed (seconds per character)
 
 # Set the path to Tesseract (Windows users)
 pytesseract.pytesseract.tesseract_cmd = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
@@ -117,39 +126,47 @@ def main(syllable):
 
 
 
+
+
 def auto_read_and_type_word_gui():
     global region
     if not region:
         messagebox.showwarning("No Region", "Please select a region first.")
         return
     text = capture_and_read_text(region)
+    cleaned_text = clean_input(text)
     extracted_text_box.delete(1.0, tk.END)
-    extracted_text_box.insert(tk.END, text)
-    words = main(text)
+    extracted_text_box.insert(tk.END, cleaned_text)
+    words = main(cleaned_text)
     found_words_box.delete(1.0, tk.END)
+    interval = typing_speed_var.get()
     if words:
         for word in words[:15]:
             found_words_box.insert(tk.END, f"{word['word']} (score: {word.get('score',0)})\n")
         word = random.choice(words[:15])
         text_to_type = word['word'].strip()
-        pyautogui.write(text_to_type, interval=0.003)
+        pyautogui.write(text_to_type, interval=interval)
         pyautogui.press('enter')
     else:
         found_words_box.insert(tk.END, "No words found.")
 
 
 
+
+
 def manual_entry_gui():
     entry = simpledialog.askstring("Manual Entry", "Enter your letters:")
     if entry:
-        words = main(entry)
+        cleaned_entry = clean_input(entry)
+        words = main(cleaned_entry)
         found_words_box.delete(1.0, tk.END)
+        interval = typing_speed_var.get()
         if words:
             for word in words[:10]:
                 found_words_box.insert(tk.END, f"{word['word']} (score: {word.get('score',0)})\n")
             word = random.choice(words[:10])
             text_to_type = word['word'].strip()
-            pyautogui.write(text_to_type, interval=0.01)
+            pyautogui.write(text_to_type, interval=interval)
             pyautogui.press('enter')
         else:
             found_words_box.insert(tk.END, "No words found.")
@@ -179,41 +196,77 @@ def finish_manual_entry():
 
 
 # --- GUI Setup ---
+
+
+# --- Modern GUI Styling ---
+BG_COLOR = "#23272e"
+FG_COLOR = "#f8f8f2"
+ACCENT_COLOR = "#6272a4"
+BTN_COLOR = "#44475a"
+BTN_ACTIVE = "#6272a4"
+FONT = ("Segoe UI", 12)
+HEADER_FONT = ("Segoe UI", 18, "bold")
+
 root = tk.Tk()
 root.title("Wordbomb Macro GUI")
+root.attributes('-topmost', True)
+root.configure(bg=BG_COLOR)
+
 
 def select_region_button():
     global region
     region = select_capture_region_gui()
-    region_label.config(text=f"Region: {region}")
-
-region_label = tk.Label(root, text="Region: Not selected")
-region_label.pack(pady=5)
-
-select_region_btn = tk.Button(root, text="Select Region", command=select_region_button)
-select_region_btn.pack(pady=5)
+    if region:
+        region_label.config(text=f"Region: {region}")
+    else:
+        region_label.config(text="Region: Not selected")
 
 
+# --- Header ---
+header = tk.Label(root, text="Wordbomb Macro", font=HEADER_FONT, bg=BG_COLOR, fg=ACCENT_COLOR)
+header.pack(pady=(18, 8))
 
-# Label to instruct user to press Ctrl
-ctrl_label = tk.Label(root, text="Press Ctrl to Capture & Extract (global hotkey)")
-ctrl_label.pack(pady=5)
+region_label = tk.Label(root, text="Region: Not selected", font=FONT, bg=BG_COLOR, fg=FG_COLOR)
+region_label.pack(pady=(0, 8))
 
-# Use keyboard module to listen for Ctrl globally
+style = ttk.Style()
+style.theme_use('clam')
+style.configure('TButton', font=FONT, background=BTN_COLOR, foreground=FG_COLOR, borderwidth=0, focusthickness=3, focuscolor=ACCENT_COLOR, padding=8)
+style.map('TButton', background=[('active', BTN_ACTIVE)])
+
+select_region_btn = ttk.Button(root, text="Select Region", command=select_region_button, style='TButton')
+select_region_btn.pack(pady=6, ipadx=8, ipady=2)
+
+
+# Typing speed slider
+typing_speed_var = tk.DoubleVar(value=0.01)
+def update_speed_label(val):
+    speed_val = float(val)
+    speed_label.config(text=f"Typing Speed: {speed_val:.3f} sec/char")
+
+speed_frame = tk.Frame(root, bg=BG_COLOR)
+speed_frame.pack(pady=(0, 10))
+speed_label = tk.Label(speed_frame, text=f"Typing Speed: {typing_speed_var.get():.3f} sec/char", font=FONT, bg=BG_COLOR, fg=ACCENT_COLOR)
+speed_label.pack(side=tk.LEFT, padx=(0, 10))
+speed_slider = ttk.Scale(speed_frame, from_=0.001, to=0.1, orient=tk.HORIZONTAL, variable=typing_speed_var, command=update_speed_label, length=200)
+speed_slider.pack(side=tk.LEFT)
+
+ctrl_label = tk.Label(root, text="Press Ctrl to Capture & Extract (global hotkey)", font=FONT, bg=BG_COLOR, fg=ACCENT_COLOR)
+ctrl_label.pack(pady=(0, 10))
+
 def on_ctrl_keyboard():
     auto_read_and_type_word_gui()
-
 keyboard.add_hotkey('ctrl', on_ctrl_keyboard)
 
-manual_btn = tk.Button(root, text="Manual Entry", command=manual_entry_gui)
-manual_btn.pack(pady=5)
+manual_btn = ttk.Button(root, text="Manual Entry", command=manual_entry_gui, style='TButton')
+manual_btn.pack(pady=6, ipadx=8, ipady=2)
 
-tk.Label(root, text="Extracted Text:").pack()
-extracted_text_box = scrolledtext.ScrolledText(root, height=4, width=50)
+tk.Label(root, text="Extracted Text:", font=FONT, bg=BG_COLOR, fg=FG_COLOR).pack(pady=(10, 0))
+extracted_text_box = ScrolledText(root, height=4, width=50, font=FONT, bg=BTN_COLOR, fg=FG_COLOR, insertbackground=FG_COLOR, borderwidth=0)
 extracted_text_box.pack(pady=5)
 
-tk.Label(root, text="Found Words:").pack()
-found_words_box = scrolledtext.ScrolledText(root, height=10, width=50)
+tk.Label(root, text="Found Words:", font=FONT, bg=BG_COLOR, fg=FG_COLOR).pack(pady=(10, 0))
+found_words_box = ScrolledText(root, height=10, width=50, font=FONT, bg=BTN_COLOR, fg=FG_COLOR, insertbackground=FG_COLOR, borderwidth=0)
 found_words_box.pack(pady=5)
 
 root.mainloop()
