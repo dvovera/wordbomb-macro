@@ -1,6 +1,7 @@
 # Wordbomb Macro
 
 ![demo](https://github.com/user-attachments/assets/7f7d0522-e93a-4f01-973b-87312b36ed7b)
+
 (in the gif above i was fartmaster and i got banned)
 
 
