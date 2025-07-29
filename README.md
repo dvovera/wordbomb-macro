@@ -43,7 +43,7 @@ A Python macro with a modern GUI for automating word extraction and typing in th
 - Use the GUI to select a region, adjust typing speed, and start automation.
 
 ## Building the EXE
-1. Make sure all dependencies are installed in your venv.
+1. Make sure all dependencies are installed in your venv and the venv is activated.
 2. Install PyInstaller:
    ```
    pip install pyinstaller
@@ -52,15 +52,5 @@ A Python macro with a modern GUI for automating word extraction and typing in th
    ```
    pyinstaller --onefile --noconsole --add-data "Tesseract-OCR;Tesseract-OCR" wordbomb_macro.py
    ```
-4. The `.exe` will be in the `dist` folder. Do **not** push this file to GitHub.
+4. The `.exe` will be in the `dist` folder.
 
-## Sharing the EXE
-- Upload the `.exe` and `Tesseract-OCR` folder to a file sharing service (Google Drive, Dropbox, etc.)
-- Share the download link with users.
-
-## Notes
-- `.exe` size is large due to Python, dependencies, and Tesseract-OCR.
-- Do **not** push `Tesseract-OCR/` or `.exe` files to GitHub (see `.gitignore`).
-
-## License
-MIT
