@@ -6,6 +6,7 @@ def clean_input(text):
 
 
 import pytesseract
+print(pytesseract.__version__)
 import cv2
 import numpy as np
 import pyautogui
@@ -24,8 +25,15 @@ region = None
 typing_speed = 0.01  # Default typing speed (seconds per character)
 
 # Set the path to Tesseract (Windows users)
-pytesseract.pytesseract.tesseract_cmd = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+import os
+import sys
 
+if getattr(sys, 'frozen', False):
+    # Running as a PyInstaller bundle
+    tesseract_path = os.path.join(sys._MEIPASS, 'tesseract-OCR', 'tesseract.exe')
+else:
+    tesseract_path = os.path.join(os.path.dirname(__file__), 'tesseract-OCR', 'tesseract.exe')
+pytesseract.pytesseract.tesseract_cmd = tesseract_path
 # Function to let user select a region by clicking two corners (GUI)
 
 # Enhanced region selection with mouse clicks and visual rectangle
