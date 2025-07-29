@@ -82,7 +82,7 @@ def capture_and_read_text(region=None):
 
     return extracted_text
 
-
+# s
 
 def find_words(sequence):
     # Build the URL with the wildcard (*) around the sequence
