@@ -40,7 +40,7 @@ A Python macro with a modern GUI for automating word extraction and typing in th
   ```
   python wordbomb_macro.py
   ```
-- Use the GUI to select a region, adjust typing speed, and start automation.
+- Use the GUI to select a region, adjust typing speed, and press CONTROL key whenever it is your turn, make sure the game window is focused.
 
 ## Building the EXE
 1. Make sure all dependencies are installed in your venv and the venv is activated.
