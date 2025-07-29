@@ -6,7 +6,9 @@
 
 
 
-A Python macro with a modern GUI for automating word extraction and typing in the Wordbomb game using OCR (Tesseract) and Datamuse API.
+A Python macro for cheating in the game Word Bomb. 
+Select the screen region with the text, and press CTRL whenever it is your turn, it will automatically type and enter the word.
+Text recognition using OCR (Tesseract) and Datamuse API.
 
 ## Features
 - Select screen region for OCR with a visual overlay
