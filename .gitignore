@@ -3,3 +3,4 @@ dist/
 .venv/
 extract_words.py
 find_words.py
+*.spec
