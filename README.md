@@ -10,13 +10,6 @@ A Python macro for cheating in the game Word Bomb.
 Select the screen region with the text, and press CTRL whenever it is your turn, it will automatically type and enter the word.
 Text recognition using OCR (Tesseract) and Datamuse API.
 
-## Features
-- Select screen region for OCR with a visual overlay
-- Adjustable typing speed
-- Manual entry and auto-capture modes
-- Modern tkinter GUI
-- Bundles Tesseract-OCR for offline OCR
-
 ## Requirements
 - Python 3.8+
 - Tesseract-OCR (not included in repo, see below)
