@@ -1,6 +1,8 @@
 # Wordbomb Macro
 
-![Uploading 07291-ezgif.com-video-to-gif-converter.gif…]()
+![demo](https://github.com/user-attachments/assets/7f7d0522-e93a-4f01-973b-87312b36ed7b)
+
+
 
 A Python macro with a modern GUI for automating word extraction and typing in the Wordbomb game using OCR (Tesseract) and Datamuse API.
 
